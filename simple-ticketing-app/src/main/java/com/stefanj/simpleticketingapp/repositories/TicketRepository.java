@@ -1,5 +1,9 @@
 package com.stefanj.simpleticketingapp.repositories;
 
-public interface TicketRepository {
+import org.springframework.data.repository.CrudRepository;
+
+import com.stefanj.simpleticketingapp.model.Ticket;
+
+public interface TicketRepository extends CrudRepository<Ticket, Long> {
 
 }

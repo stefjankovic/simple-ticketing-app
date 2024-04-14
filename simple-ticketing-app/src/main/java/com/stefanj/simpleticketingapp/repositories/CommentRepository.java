@@ -1,5 +1,9 @@
 package com.stefanj.simpleticketingapp.repositories;
 
-public interface CommentRepository {
+import org.springframework.data.repository.CrudRepository;
+
+import com.stefanj.simpleticketingapp.model.Comment;
+
+public interface CommentRepository extends CrudRepository<Comment, Long> {
 
 }
