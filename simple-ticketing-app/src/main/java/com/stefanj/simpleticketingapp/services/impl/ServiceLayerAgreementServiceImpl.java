@@ -1,8 +1,11 @@
 package com.stefanj.simpleticketingapp.services.impl;
 
+import org.springframework.stereotype.Service;
+
 import com.stefanj.simpleticketingapp.model.ServiceLayerAgreement;
 import com.stefanj.simpleticketingapp.services.ServiceLayerAgreementService;
 
+@Service
 public class ServiceLayerAgreementServiceImpl implements ServiceLayerAgreementService {
 
 	@Override

@@ -1,8 +1,11 @@
 package com.stefanj.simpleticketingapp.services.impl;
 
+import org.springframework.stereotype.Service;
+
 import com.stefanj.simpleticketingapp.model.User;
 import com.stefanj.simpleticketingapp.services.UserService;
 
+@Service
 public class UserServiceImpl implements UserService {
 
 	@Override
