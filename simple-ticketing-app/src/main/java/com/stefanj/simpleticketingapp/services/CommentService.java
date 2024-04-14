@@ -1,5 +1,9 @@
 package com.stefanj.simpleticketingapp.services;
 
-public interface CommentService {
+import com.stefanj.simpleticketingapp.model.Comment;
 
+public interface CommentService {
+	Comment getById(Long id);
+	Comment save(Comment comment);
+	void delete(Long id);
 }

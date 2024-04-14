@@ -23,5 +23,5 @@ public class UserGroup extends AbstractEntity {
 	@Column(nullable = false)
 	private String description;
 	@ManyToMany(mappedBy = "groups")
-	private List<ApplicationUser> users;
+	private List<User> users;
 }

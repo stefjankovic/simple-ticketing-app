@@ -22,6 +22,6 @@ public class Comment extends AbstractEntity {
 	private Ticket ticket;
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_fk", nullable = false)
-	private ApplicationUser user;
+	private User user;
 	private String comment;
 }

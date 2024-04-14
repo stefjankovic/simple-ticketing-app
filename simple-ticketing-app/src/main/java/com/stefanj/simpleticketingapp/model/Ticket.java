@@ -37,13 +37,13 @@ public class Ticket extends AbstractEntity {
 	private Date resolvedDate;
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "assigned_to_user_fk", nullable = false)
-	private ApplicationUser assignedTo;
+	private User assignedTo;
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by_user_fk", nullable = false)
-	private ApplicationUser createdBy;
+	private User createdBy;
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "resolved_by_user_fk", nullable = false)
-	private ApplicationUser resolvedBy;
+	private User resolvedBy;
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_fk", nullable = false)
 	private UserGroup userGroup;

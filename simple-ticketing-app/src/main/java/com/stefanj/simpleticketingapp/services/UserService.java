@@ -1,5 +1,9 @@
 package com.stefanj.simpleticketingapp.services;
 
-public interface UserService {
+import com.stefanj.simpleticketingapp.model.User;
 
+public interface UserService {
+	User getById(Long id);
+	User save(User user);
+	void delete(Long id);
 }
