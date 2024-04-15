@@ -52,7 +52,7 @@ public class TicketController {
 	@PutMapping
 	public ResponseEntity<TicketDTO> updateTicket(TicketDTO ticketDTO) {
 		logger.debug(getClass().getSimpleName() + ".updateTicket: Called for " + ticketDTO + ".");
-		return new ResponseEntity<>(TicketDTO.fromEntity(ticketService.save(TicketDTO.toEntity(ticketDTO))), HttpStatus.OK);
+		return new ResponseEntity<>(TicketDTO.fromEntity(ticketService.update(TicketDTO.toEntity(ticketDTO))), HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/{id}")

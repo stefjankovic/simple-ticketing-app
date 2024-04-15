@@ -7,6 +7,7 @@ import com.stefanj.simpleticketingapp.model.UserGroup;
 public interface UserGroupService {
 	UserGroup getById(Long id);
 	UserGroup save(UserGroup userGroup);
+	UserGroup update(UserGroup userGroup);
 	void delete(Long id);
 	List<UserGroup> getAll();
 }

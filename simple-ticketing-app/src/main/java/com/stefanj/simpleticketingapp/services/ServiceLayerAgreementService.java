@@ -9,4 +9,5 @@ public interface ServiceLayerAgreementService {
 	ServiceLayerAgreement save(ServiceLayerAgreement serviceLayerAgreement);
 	void delete(Long id);
 	List<ServiceLayerAgreement> getAll();
+	ServiceLayerAgreement update(ServiceLayerAgreement serviceLayerAgreement);
 }

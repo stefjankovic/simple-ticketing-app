@@ -39,7 +39,7 @@ public class CommentController {
 	
 	@PutMapping("/{ticketid}/comments/{id}")
 	public ResponseEntity<CommentDTO> updateComment(@RequestBody CommentDTO commentDTO) {
-		return new ResponseEntity<>(CommentDTO.fromEntity(commentService.save(CommentDTO.toEntity(commentDTO))), HttpStatus.OK);
+		return new ResponseEntity<>(CommentDTO.fromEntity(commentService.update(CommentDTO.toEntity(commentDTO))), HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/{ticketid}/comments/{id}")

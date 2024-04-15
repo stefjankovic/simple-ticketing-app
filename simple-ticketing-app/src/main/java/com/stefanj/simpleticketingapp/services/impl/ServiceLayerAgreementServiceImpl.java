@@ -51,7 +51,16 @@ private static final Logger logger = LoggerFactory.getLogger(ServiceLayerAgreeme
 
 	@Override
 	public List<ServiceLayerAgreement> getAll() {
-		logger.debug(getClass().getSimpleName() + ".findAll: Start.");
+		logger.debug(getClass().getSimpleName() + ".getAll: Start.");
 		return serviceLayerAgreementRepository.findAll();
+	}
+
+	@Override
+	public ServiceLayerAgreement update(ServiceLayerAgreement sla) {
+		logger.debug(getClass().getSimpleName() + ".update: Start.");
+		if (!serviceLayerAgreementRepository.existsById(sla.getId())) throw new NotFoundException(ErrorCode.RESOURCE_NOT_FOUND, new HashMap<String, Object>(Map.of("id", sla.getId())));
+		ServiceLayerAgreement updatedSLA = serviceLayerAgreementRepository.save(sla);
+		logger.debug(getClass().getSimpleName() + ".update: End. Id = '" + updatedSLA.getId() + "'.");
+		return updatedSLA;
 	}
 }

@@ -51,7 +51,16 @@ public class UserGroupServiceImpl implements UserGroupService {
 
 	@Override
 	public List<UserGroup> getAll() {
-		logger.debug(getClass().getSimpleName() + ".findAll: Start.");
+		logger.debug(getClass().getSimpleName() + ".getAll: Start.");
 		return userGroupRepository.findAll();
+	}
+
+	@Override
+	public UserGroup update(UserGroup userGroup) {
+		logger.debug(getClass().getSimpleName() + ".update: Start.");
+		if (!userGroupRepository.existsById(userGroup.getId())) throw new NotFoundException(ErrorCode.RESOURCE_NOT_FOUND, new HashMap<String, Object>(Map.of("id", userGroup.getId())));
+		UserGroup updatedGroup = userGroupRepository.save(userGroup);
+		logger.debug(getClass().getSimpleName() + ".update: End. Id = '" + updatedGroup.getId() + "'.");
+		return updatedGroup;
 	}
 }

@@ -52,7 +52,7 @@ public class UserController {
 	@PutMapping
 	public ResponseEntity<UserDTO> updateUser(UserDTO userDTO) {
 		logger.debug(getClass().getSimpleName() + ".updateUser: Called for " + userDTO + ".");
-		return new ResponseEntity<>(UserDTO.fromEntity(userService.save(UserDTO.toEntity(userDTO))), HttpStatus.OK);
+		return new ResponseEntity<>(UserDTO.fromEntity(userService.update(UserDTO.toEntity(userDTO))), HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/{id}")

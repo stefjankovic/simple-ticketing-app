@@ -51,7 +51,16 @@ public class TicketServiceImpl implements TicketService {
 
 	@Override
 	public List<Ticket> getAll() {
-		logger.debug(getClass().getSimpleName() + ".findAll: Start.");
+		logger.debug(getClass().getSimpleName() + ".getAll: Start.");
 		return ticketRepository.findAll();
+	}
+
+	@Override
+	public Ticket update(Ticket ticket) {
+		logger.debug(getClass().getSimpleName() + ".update: Start.");
+		if (!ticketRepository.existsById(ticket.getId())) throw new NotFoundException(ErrorCode.RESOURCE_NOT_FOUND, new HashMap<String, Object>(Map.of("id", ticket.getId())));
+		Ticket updatedTicket = ticketRepository.save(ticket);
+		logger.debug(getClass().getSimpleName() + ".update: End. Id = '" + updatedTicket.getId() + "'.");
+		return updatedTicket;
 	}
 }

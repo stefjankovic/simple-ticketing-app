@@ -41,8 +41,6 @@ public class CommentServiceImpl implements CommentService {
 		return savedComment;
 	}
 	
-	// TODO add update method
-
 	@Override
 	public void delete(Long id) {
 		logger.debug(getClass().getSimpleName() + ".delete: id (" + id + ").");
@@ -55,5 +53,14 @@ public class CommentServiceImpl implements CommentService {
 	public List<Comment> getByTicketId(Long id) {
 		logger.debug(getClass().getSimpleName() + ".getByTicketId: id (" + id + ").");
 		return commentRepository.findByTicketId(id);
+	}
+
+	@Override
+	public Comment update(Comment comment) {
+		logger.debug(getClass().getSimpleName() + ".update: Start.");
+		if (!commentRepository.existsById(comment.getId())) throw new NotFoundException(ErrorCode.RESOURCE_NOT_FOUND, new HashMap<String, Object>(Map.of("id", comment.getId())));
+		Comment updatedComment = commentRepository.save(comment);
+		logger.debug(getClass().getSimpleName() + ".update: End. Id = '" + updatedComment.getId() + "'.");
+		return updatedComment;
 	}
 }

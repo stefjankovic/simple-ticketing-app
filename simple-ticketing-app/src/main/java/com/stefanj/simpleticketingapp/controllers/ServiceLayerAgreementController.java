@@ -52,7 +52,7 @@ public class ServiceLayerAgreementController {
 	@PutMapping
 	public ResponseEntity<ServiceLayerAgreementDTO> updateSLA(ServiceLayerAgreementDTO slaDTO) {
 		logger.debug(getClass().getSimpleName() + ".updateSLA: Called for " + slaDTO + ".");
-		return new ResponseEntity<>(ServiceLayerAgreementDTO.fromEntity(serviceLayerAgreementService.save(ServiceLayerAgreementDTO.toEntity(slaDTO))), HttpStatus.OK);
+		return new ResponseEntity<>(ServiceLayerAgreementDTO.fromEntity(serviceLayerAgreementService.update(ServiceLayerAgreementDTO.toEntity(slaDTO))), HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/{id}")

@@ -52,7 +52,7 @@ public class UserGroupController {
 	@PutMapping
 	public ResponseEntity<UserGroupDTO> updateUserGroup(UserGroupDTO userGroupDTO) {
 		logger.debug(getClass().getSimpleName() + ".updateUserGroup: Called for " + userGroupDTO + ".");
-		return new ResponseEntity<>(UserGroupDTO.fromEntity(userGroupService.save(UserGroupDTO.toEntity(userGroupDTO))), HttpStatus.OK);
+		return new ResponseEntity<>(UserGroupDTO.fromEntity(userGroupService.update(UserGroupDTO.toEntity(userGroupDTO))), HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/{id}")

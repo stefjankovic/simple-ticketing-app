@@ -51,7 +51,16 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public List<User> getAll() {
-		logger.debug(getClass().getSimpleName() + ".findAll: Start.");
+		logger.debug(getClass().getSimpleName() + ".getAll: Start.");
 		return userRepository.findAll();
+	}
+
+	@Override
+	public User update(User user) {
+		logger.debug(getClass().getSimpleName() + ".update: Start.");
+		if (!userRepository.existsById(user.getId())) throw new NotFoundException(ErrorCode.RESOURCE_NOT_FOUND, new HashMap<String, Object>(Map.of("id", user.getId())));
+		User updatedUser = userRepository.save(user);
+		logger.debug(getClass().getSimpleName() + ".update: End. Id = '" + updatedUser.getId() + "'.");
+		return updatedUser;
 	}
 }
