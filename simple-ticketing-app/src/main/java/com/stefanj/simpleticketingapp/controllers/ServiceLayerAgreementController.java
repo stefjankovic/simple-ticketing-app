@@ -15,8 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.stefanj.simpleticketingapp.dtos.ServiceLayerAgreementDTO;
 import com.stefanj.simpleticketingapp.services.ServiceLayerAgreementService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
-@RequestMapping(path="/api/v1/sla", produces="application/json")
+@Tag(name = "ServiceLayerAgreement")
+@RequestMapping(path="/api/v1/slas", produces="application/json")
 public class ServiceLayerAgreementController {
 	private static final Logger logger = LoggerFactory.getLogger(ServiceLayerAgreementController.class);
 	

@@ -15,7 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.stefanj.simpleticketingapp.dtos.UserGroupDTO;
 import com.stefanj.simpleticketingapp.services.UserGroupService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
+@Tag(name = "UserGroup")
 @RequestMapping(path="/api/v1/user-groups", produces="application/json")
 public class UserGroupController {
 	private static final Logger logger = LoggerFactory.getLogger(UserGroupController.class);

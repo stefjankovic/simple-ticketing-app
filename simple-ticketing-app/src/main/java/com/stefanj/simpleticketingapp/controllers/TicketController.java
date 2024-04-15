@@ -15,7 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.stefanj.simpleticketingapp.dtos.TicketDTO;
 import com.stefanj.simpleticketingapp.services.TicketService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
+@Tag(name = "Ticket")
 @RequestMapping(path="/api/v1/tickets", produces="application/json")
 public class TicketController {
 	private static final Logger logger = LoggerFactory.getLogger(TicketController.class);
