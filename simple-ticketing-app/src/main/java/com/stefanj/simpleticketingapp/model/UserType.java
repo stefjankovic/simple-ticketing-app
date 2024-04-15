@@ -1,7 +1,5 @@
 package com.stefanj.simpleticketingapp.model;
 
-import com.fasterxml.jackson.annotation.JsonValue;
-
 public enum UserType {
 	ADMIN("Admin"),
 	SUPPORT("SupportStaff"),
@@ -14,7 +12,6 @@ public enum UserType {
         this.code = code;
 	}
 	
-	@JsonValue
     public String getCode() {
         return code;
     }

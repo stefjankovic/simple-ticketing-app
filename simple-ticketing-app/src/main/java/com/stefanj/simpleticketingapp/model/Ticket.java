@@ -3,6 +3,7 @@ package com.stefanj.simpleticketingapp.model;
 import java.util.Date;
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -47,6 +48,6 @@ public class Ticket extends AbstractEntity {
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_fk", nullable = false)
 	private UserGroup userGroup;
-	@OneToMany(mappedBy = "ticket", fetch = FetchType.LAZY)
-	private List<Comment> comment;
+	@OneToMany(mappedBy = "ticket", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+	private List<Comment> comments;
 }

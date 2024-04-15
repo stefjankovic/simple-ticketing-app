@@ -15,6 +15,7 @@ import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import lombok.Getter;
+import lombok.Setter;
 
 @MappedSuperclass
 @Getter
@@ -22,6 +23,7 @@ import lombok.Getter;
 public class AbstractEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Setter
     private long id;
     @Column(nullable = false, updatable = false)
     @CreatedDate

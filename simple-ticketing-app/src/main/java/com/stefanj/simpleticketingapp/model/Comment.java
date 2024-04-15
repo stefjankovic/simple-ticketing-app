@@ -23,5 +23,5 @@ public class Comment extends AbstractEntity {
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_fk", nullable = false)
 	private User user;
-	private String comment;
+	private String text;
 }
