@@ -1,12 +1,16 @@
 package com.stefanj.simpleticketingapp.services.impl;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.stefanj.simpleticketingapp.exceptions.ErrorCode;
+import com.stefanj.simpleticketingapp.exceptions.NotFoundException;
 import com.stefanj.simpleticketingapp.model.Comment;
 import com.stefanj.simpleticketingapp.repositories.CommentRepository;
 import com.stefanj.simpleticketingapp.services.CommentService;
@@ -25,7 +29,7 @@ public class CommentServiceImpl implements CommentService {
 	public Comment getById(Long id) {
 		logger.debug(getClass().getSimpleName() + ".getById: id (" + id + ").");
 		Optional<Comment> comment = commentRepository.findById(id);
-		// TODO if (comment.isEmpty()) throw new NotFoundException();
+		if (comment.isEmpty()) throw new NotFoundException(ErrorCode.RESOURCE_NOT_FOUND, new HashMap<String, Object>(Map.of("id", id)));
 		return comment.get();
 	}
 
@@ -42,7 +46,9 @@ public class CommentServiceImpl implements CommentService {
 	@Override
 	public void delete(Long id) {
 		logger.debug(getClass().getSimpleName() + ".delete: id (" + id + ").");
-		commentRepository.deleteById(id);
+		Optional<Comment> comment = commentRepository.findById(id);
+		if (comment.isEmpty()) throw new NotFoundException(ErrorCode.RESOURCE_NOT_FOUND, new HashMap<String, Object>(Map.of("id", id)));
+		commentRepository.delete(comment.get());
 	}
 
 	@Override

@@ -1,11 +1,16 @@
 package com.stefanj.simpleticketingapp.services.impl;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.stefanj.simpleticketingapp.exceptions.ErrorCode;
+import com.stefanj.simpleticketingapp.exceptions.NotFoundException;
 import com.stefanj.simpleticketingapp.model.User;
 import com.stefanj.simpleticketingapp.repositories.UserRepository;
 import com.stefanj.simpleticketingapp.services.UserService;
@@ -24,7 +29,7 @@ public class UserServiceImpl implements UserService {
 	public User getById(Long id) {
 		logger.debug(getClass().getSimpleName() + ".getById: id (" + id + ").");
 		Optional<User> user = userRepository.findById(id);
-		// TODO if (sla.isEmpty()) throw new NotFoundException();
+		if (user.isEmpty()) throw new NotFoundException(ErrorCode.RESOURCE_NOT_FOUND, new HashMap<String, Object>(Map.of("id", id)));
 		return user.get();
 	}
 
@@ -39,6 +44,14 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void delete(Long id) {
 		logger.debug(getClass().getSimpleName() + ".delete: id (" + id + ").");
-		userRepository.deleteById(id);
+		Optional<User> user = userRepository.findById(id);
+		if (user.isEmpty()) throw new NotFoundException(ErrorCode.RESOURCE_NOT_FOUND, new HashMap<String, Object>(Map.of("id", id)));
+		userRepository.delete(user.get());
+	}
+
+	@Override
+	public List<User> getAll() {
+		logger.debug(getClass().getSimpleName() + ".findAll: Start.");
+		return userRepository.findAll();
 	}
 }

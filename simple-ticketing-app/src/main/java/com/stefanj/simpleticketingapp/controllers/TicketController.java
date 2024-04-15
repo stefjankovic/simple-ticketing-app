@@ -1,5 +1,7 @@
 package com.stefanj.simpleticketingapp.controllers;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -27,6 +29,12 @@ public class TicketController {
 	
 	public TicketController(TicketService ticketService) {
 		this.ticketService = ticketService;
+	}
+	
+	@GetMapping
+	public ResponseEntity<List<TicketDTO>> getTickets() {
+		logger.debug(getClass().getSimpleName() + ".getTickets: Start.");
+		return new ResponseEntity<>(ticketService.getAll().stream().map(sla -> TicketDTO.fromEntity(sla)).toList(), HttpStatus.OK);
 	}
 	
 	@GetMapping("/{id}")

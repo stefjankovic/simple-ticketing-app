@@ -1,5 +1,7 @@
 package com.stefanj.simpleticketingapp.controllers;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -27,6 +29,12 @@ public class UserGroupController {
 	
 	public UserGroupController(UserGroupService userGroupService) {
 		this.userGroupService = userGroupService;
+	}
+	
+	@GetMapping
+	public ResponseEntity<List<UserGroupDTO>> getUserGroups() {
+		logger.debug(getClass().getSimpleName() + ".getUserGroups: Start.");
+		return new ResponseEntity<>(userGroupService.getAll().stream().map(sla -> UserGroupDTO.fromEntity(sla)).toList(), HttpStatus.OK);
 	}
 	
 	@GetMapping("/{id}")

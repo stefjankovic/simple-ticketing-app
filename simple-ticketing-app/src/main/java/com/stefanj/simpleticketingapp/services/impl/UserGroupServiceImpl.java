@@ -1,11 +1,16 @@
 package com.stefanj.simpleticketingapp.services.impl;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.stefanj.simpleticketingapp.exceptions.ErrorCode;
+import com.stefanj.simpleticketingapp.exceptions.NotFoundException;
 import com.stefanj.simpleticketingapp.model.UserGroup;
 import com.stefanj.simpleticketingapp.repositories.UserGroupRepository;
 import com.stefanj.simpleticketingapp.services.UserGroupService;
@@ -24,7 +29,7 @@ public class UserGroupServiceImpl implements UserGroupService {
 	public UserGroup getById(Long id) {
 		logger.debug(getClass().getSimpleName() + ".getById: id (" + id + ").");
 		Optional<UserGroup> userGroup = userGroupRepository.findById(id);
-		// TODO if (userGroup.isEmpty()) throw new NotFoundException();
+		if (userGroup.isEmpty()) throw new NotFoundException(ErrorCode.RESOURCE_NOT_FOUND, new HashMap<String, Object>(Map.of("id", id)));
 		return userGroup.get();
 	}
 
@@ -39,6 +44,14 @@ public class UserGroupServiceImpl implements UserGroupService {
 	@Override
 	public void delete(Long id) {
 		logger.debug(getClass().getSimpleName() + ".delete: id (" + id + ").");
-		userGroupRepository.deleteById(id);
+		Optional<UserGroup> userGroup = userGroupRepository.findById(id);
+		if (userGroup.isEmpty()) throw new NotFoundException(ErrorCode.RESOURCE_NOT_FOUND, new HashMap<String, Object>(Map.of("id", id)));
+		userGroupRepository.delete(userGroup.get());
+	}
+
+	@Override
+	public List<UserGroup> getAll() {
+		logger.debug(getClass().getSimpleName() + ".findAll: Start.");
+		return userGroupRepository.findAll();
 	}
 }
