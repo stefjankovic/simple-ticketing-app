@@ -9,23 +9,23 @@ import jakarta.persistence.Converter;
 
 @Component
 @Converter(autoApply = true)
-public class TicketCathegoryConverter implements AttributeConverter<TicketCathegory, String> {
+public class TicketCategoryConverter implements AttributeConverter<TicketCategory, String> {
 
 	@Override
-	public String convertToDatabaseColumn(TicketCathegory cathegory) {
-		if (cathegory == null) {
+	public String convertToDatabaseColumn(TicketCategory category) {
+		if (category == null) {
 			return null;
 		}
-		return cathegory.getCode();
+		return category.getCode();
 	}
 
 	@Override
-	public TicketCathegory convertToEntityAttribute(String code) {
+	public TicketCategory convertToEntityAttribute(String code) {
 		if (code == null) {
 			return null;
 		}
 
-		return Stream.of(TicketCathegory.values())
+		return Stream.of(TicketCategory.values())
 				.filter(p -> p.getCode()
 				.equals(code))
 				.findFirst()

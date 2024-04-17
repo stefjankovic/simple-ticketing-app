@@ -1,11 +1,13 @@
 package com.stefanj.simpleticketingapp.controllers;
 
+import java.security.Principal;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,8 +33,9 @@ public class UserController {
 		this.userService = userService;
 	}
 	
+	@PreAuthorize("hasAuthority('SCOPE_Admin')")
 	@GetMapping
-	public ResponseEntity<List<UserDTO>> getUsers() {
+	public ResponseEntity<List<UserDTO>> getUsers(Principal principal) {
 		logger.debug(getClass().getSimpleName() + ".getUsers: Start.");
 		return new ResponseEntity<>(userService.getAll().stream().map(sla -> UserDTO.fromEntity(sla)).toList(), HttpStatus.OK);
 	}

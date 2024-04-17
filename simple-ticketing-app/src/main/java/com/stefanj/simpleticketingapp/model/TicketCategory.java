@@ -1,6 +1,6 @@
 package com.stefanj.simpleticketingapp.model;
 
-public enum TicketCathegory {
+public enum TicketCategory {
 	SERVICE_REQUEST("ServiceRequest"),
 	INCIDENT("Incident"),
 	PROBLEM("Problem"),
@@ -8,7 +8,7 @@ public enum TicketCathegory {
 	
 	private final String code;
 	
-	TicketCathegory(String code) {
+	TicketCategory(String code) {
         this.code = code;
 	}
 	
@@ -16,10 +16,10 @@ public enum TicketCathegory {
         return code;
     }
 	
-	public static TicketCathegory fromValue(String input) {
-		for (TicketCathegory cathegory : TicketCathegory.values()) {
-			if (cathegory.getCode().trim().equalsIgnoreCase(input)) {
-				return cathegory;
+	public static TicketCategory fromValue(String input) {
+		for (TicketCategory category : TicketCategory.values()) {
+			if (category.getCode().trim().equalsIgnoreCase(input)) {
+				return category;
 			}
 		}
 		return null;

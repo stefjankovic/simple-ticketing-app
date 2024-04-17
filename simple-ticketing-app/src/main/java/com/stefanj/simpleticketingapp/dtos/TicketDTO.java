@@ -7,7 +7,7 @@ import java.util.List;
 
 import com.stefanj.simpleticketingapp.model.Comment;
 import com.stefanj.simpleticketingapp.model.Ticket;
-import com.stefanj.simpleticketingapp.model.TicketCathegory;
+import com.stefanj.simpleticketingapp.model.TicketCategory;
 import com.stefanj.simpleticketingapp.model.TicketStatus;
 import com.stefanj.simpleticketingapp.model.User;
 import com.stefanj.simpleticketingapp.model.UserGroup;
@@ -25,7 +25,7 @@ public class TicketDTO {
 	private Long id;
 	private String title;
 	private String description;
-	private String cathegory;
+	private String category;
 	private String status;
 	private ServiceLayerAgreementDTO sla;
 	private LocalDateTime resolvedDate;
@@ -40,7 +40,7 @@ public class TicketDTO {
 		ticket.setId(ticketDTO.getId());
 		ticket.setTitle(ticketDTO.getTitle());
 		ticket.setDescription(ticketDTO.getDescription());
-		ticket.setCathegory(TicketCathegory.fromValue(ticketDTO.getCathegory()));
+		ticket.setCategory(TicketCategory.fromValue(ticketDTO.getCategory()));
 		ticket.setStatus(TicketStatus.fromValue(ticketDTO.getStatus()));
 		ticket.setSla(ServiceLayerAgreementDTO.toEntity(ticketDTO.getSla()));
 		ticket.setResolvedDate(Date.from(ticketDTO.getResolvedDate().atZone(ZoneId.systemDefault()).toInstant()));

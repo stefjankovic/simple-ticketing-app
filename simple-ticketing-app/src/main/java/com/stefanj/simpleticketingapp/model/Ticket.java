@@ -29,7 +29,7 @@ public class Ticket extends AbstractEntity {
 	private String title;
 	@Column(nullable = false)
 	private String description;
-	private TicketCathegory cathegory;
+	private TicketCategory category;
 	private TicketStatus status;
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "sla_fk", nullable = false)

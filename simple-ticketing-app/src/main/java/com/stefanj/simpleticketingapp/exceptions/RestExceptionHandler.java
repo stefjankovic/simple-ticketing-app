@@ -8,6 +8,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -38,6 +39,24 @@ public class RestExceptionHandler {
         		.code(ErrorCode.VALIDATION_FAILED.getCode())
         		.message("Api constraint violation.")
         		.details(fieldErrors)
+        		.build();
+        		
+        return ResponseEntity
+        		.status(HttpStatus.BAD_REQUEST)
+        		.body(apiError);
+    }
+	
+	@ExceptionHandler(AccessDeniedException.class)
+	@ResponseStatus(HttpStatus.FORBIDDEN)
+    public ResponseEntity<ApiError> handleMethodAccessDenied(AccessDeniedException exception) {
+		String exceptionMessage = exception.getMessage() == null ? "" : exception.getMessage();
+        
+        ApiError apiError = ApiError.builder()
+        		.timestamp(LocalDateTime.now())
+        		.responseStatus(HttpStatus.FORBIDDEN)
+        		.code(ErrorCode.API_ENDPOINT_ACCESS_DENIED.getCode())
+        		.message(ErrorCode.API_ENDPOINT_ACCESS_DENIED.getDescription())
+        		.details(Map.of("exceptionMessage", exceptionMessage))
         		.build();
         		
         return ResponseEntity
