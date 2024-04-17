@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,18 +44,21 @@ public class ServiceLayerAgreementController {
 		return new ResponseEntity<>(ServiceLayerAgreementDTO.fromEntity(serviceLayerAgreementService.getById(id)), HttpStatus.OK);
 	}
 
+	@PreAuthorize("hasAuthority('SCOPE_Admin')")
 	@PostMapping
 	public ResponseEntity<ServiceLayerAgreementDTO> createSLA(ServiceLayerAgreementDTO slaDTO) {
 		logger.debug(getClass().getSimpleName() + ".createSLA: Called for " + slaDTO + ".");
 		return new ResponseEntity<>(ServiceLayerAgreementDTO.fromEntity(serviceLayerAgreementService.save(ServiceLayerAgreementDTO.toEntity(slaDTO))), HttpStatus.CREATED);
 	}
 	
+	@PreAuthorize("hasAuthority('SCOPE_Admin')")
 	@PutMapping
 	public ResponseEntity<ServiceLayerAgreementDTO> updateSLA(ServiceLayerAgreementDTO slaDTO) {
 		logger.debug(getClass().getSimpleName() + ".updateSLA: Called for " + slaDTO + ".");
 		return new ResponseEntity<>(ServiceLayerAgreementDTO.fromEntity(serviceLayerAgreementService.update(ServiceLayerAgreementDTO.toEntity(slaDTO))), HttpStatus.OK);
 	}
 	
+	@PreAuthorize("hasAuthority('SCOPE_Admin')")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<String> deleteSLA(@PathVariable Long id) {
 		logger.debug(getClass().getSimpleName() + ".deleteSLA: Called for id (" + id + ").");

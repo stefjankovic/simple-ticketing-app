@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import com.stefanj.simpleticketingapp.exceptions.ErrorCode;
@@ -19,6 +20,7 @@ import com.stefanj.simpleticketingapp.services.UserGroupService;
 public class UserGroupServiceImpl implements UserGroupService {
 	private static final Logger logger = LoggerFactory.getLogger(UserGroupServiceImpl.class);
 	
+	
 	private final UserGroupRepository userGroupRepository;
 	
 	public UserGroupServiceImpl(UserGroupRepository userGroupRepository) {
@@ -26,10 +28,11 @@ public class UserGroupServiceImpl implements UserGroupService {
 	}
 
 	@Override
-	public UserGroup getById(Long id) {
+	public UserGroup getById(Long id, String authenticatedUserName) {
 		logger.debug(getClass().getSimpleName() + ".getById: id (" + id + ").");
 		Optional<UserGroup> userGroup = userGroupRepository.findById(id);
 		if (userGroup.isEmpty()) throw new NotFoundException(ErrorCode.RESOURCE_NOT_FOUND, new HashMap<String, Object>(Map.of("id", id)));
+		if (!userGroupRepository.existsByIdAndUsersUserName(id, authenticatedUserName))throw new AccessDeniedException("Unauthorized. User must belong to group to view it.");
 		return userGroup.get();
 	}
 

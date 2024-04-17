@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import com.stefanj.simpleticketingapp.exceptions.ErrorCode;
@@ -26,10 +27,11 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User getById(Long id) {
+	public User getById(Long id, String authenticatedUserName) {
 		logger.debug(getClass().getSimpleName() + ".getById: id (" + id + ").");
 		Optional<User> user = userRepository.findById(id);
 		if (user.isEmpty()) throw new NotFoundException(ErrorCode.RESOURCE_NOT_FOUND, new HashMap<String, Object>(Map.of("id", id)));
+		if (!user.get().getUserName().equals(authenticatedUserName)) throw new AccessDeniedException("Unauthorized to view other users.");
 		return user.get();
 	}
 

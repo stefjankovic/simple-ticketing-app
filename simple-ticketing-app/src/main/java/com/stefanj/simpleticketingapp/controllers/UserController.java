@@ -1,6 +1,5 @@
 package com.stefanj.simpleticketingapp.controllers;
 
-import java.security.Principal;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -8,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,29 +35,33 @@ public class UserController {
 	
 	@PreAuthorize("hasAuthority('SCOPE_Admin')")
 	@GetMapping
-	public ResponseEntity<List<UserDTO>> getUsers(Principal principal) {
+	public ResponseEntity<List<UserDTO>> getUsers(Authentication authentication) {
 		logger.debug(getClass().getSimpleName() + ".getUsers: Start.");
+		logger.debug(authentication.getAuthorities().toString());
 		return new ResponseEntity<>(userService.getAll().stream().map(sla -> UserDTO.fromEntity(sla)).toList(), HttpStatus.OK);
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
+	public ResponseEntity<UserDTO> getUserById(@PathVariable Long id, Authentication authentication) {
 		logger.debug(getClass().getSimpleName() + ".getUserById: Called for id (" + id + ").");
-		return new ResponseEntity<>(UserDTO.fromEntity(userService.getById(id)), HttpStatus.OK);
+		return new ResponseEntity<>(UserDTO.fromEntity(userService.getById(id, authentication.getName())), HttpStatus.OK);
 	}
 
+	@PreAuthorize("hasAuthority('SCOPE_Admin')")
 	@PostMapping
 	public ResponseEntity<UserDTO> createUser(UserDTO userDTO) {
 		logger.debug(getClass().getSimpleName() + ".createUser: Called for " + userDTO + ".");
 		return new ResponseEntity<>(UserDTO.fromEntity(userService.save(UserDTO.toEntity(userDTO))), HttpStatus.CREATED);
 	}
 	
+	@PreAuthorize("hasAuthority('SCOPE_Admin')")
 	@PutMapping
 	public ResponseEntity<UserDTO> updateUser(UserDTO userDTO) {
 		logger.debug(getClass().getSimpleName() + ".updateUser: Called for " + userDTO + ".");
 		return new ResponseEntity<>(UserDTO.fromEntity(userService.update(UserDTO.toEntity(userDTO))), HttpStatus.OK);
 	}
 	
+	@PreAuthorize("hasAuthority('SCOPE_Admin')")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<String> deleteUser(@PathVariable Long id) {
 		logger.debug(getClass().getSimpleName() + ".deleteUser: Called for id (" + id + ").");

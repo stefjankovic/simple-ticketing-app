@@ -5,9 +5,9 @@ import java.util.List;
 import com.stefanj.simpleticketingapp.model.Ticket;
 
 public interface TicketService {
-	Ticket getById(Long id);
+	Ticket getById(Long id, String authenticatedUserName);
 	Ticket save(Ticket ticket);
 	Ticket update(Ticket ticket);
 	void delete(Long id);
-	List<Ticket> getAll();
+	List<Ticket> getAllForUser(String authenticatedUserName);
 }

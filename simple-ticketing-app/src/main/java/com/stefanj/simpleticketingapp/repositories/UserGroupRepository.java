@@ -7,5 +7,5 @@ import com.stefanj.simpleticketingapp.model.UserGroup;
 
 @Repository
 public interface UserGroupRepository extends JpaRepository<UserGroup, Long> {
-
+	boolean existsByIdAndUsersUserName(Long id, String userName);
 }
