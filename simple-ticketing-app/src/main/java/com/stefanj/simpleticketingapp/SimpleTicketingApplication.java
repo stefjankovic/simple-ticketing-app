@@ -1,5 +1,7 @@
 package com.stefanj.simpleticketingapp;
 
+import java.util.Collections;
+
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -9,8 +11,15 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.stefanj.simpleticketingapp.config.RsaKeyProperties;
+import com.stefanj.simpleticketingapp.model.SLAPriority;
+import com.stefanj.simpleticketingapp.model.ServiceLayerAgreement;
+import com.stefanj.simpleticketingapp.model.Ticket;
+import com.stefanj.simpleticketingapp.model.TicketCategory;
+import com.stefanj.simpleticketingapp.model.TicketStatus;
 import com.stefanj.simpleticketingapp.model.User;
 import com.stefanj.simpleticketingapp.model.UserType;
+import com.stefanj.simpleticketingapp.repositories.ServiceLayerAgreementRepository;
+import com.stefanj.simpleticketingapp.repositories.TicketRepository;
 import com.stefanj.simpleticketingapp.repositories.UserRepository;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
@@ -28,10 +37,18 @@ public class SimpleTicketingApplication {
 	}
 	
 	@Bean
-	CommandLineRunner commandLineRunner(UserRepository userRepository, PasswordEncoder encoder) {
-		return args -> {
-			userRepository.save(new User("user", encoder.encode("password"), "user@app.com", UserType.SUPPORT, "Support User", true, null, null));
-			userRepository.save(new User("admin", encoder.encode("password"), "admin@app.com", UserType.ADMIN, "Admin Admin", true, null, null));
-		};
+	CommandLineRunner commandLineRunner(UserRepository userRepository, TicketRepository ticketRepository,
+            ServiceLayerAgreementRepository serviceLayerAgreementRepository, PasswordEncoder encoder) {
+		User support = new User("user", encoder.encode("password"), "user@app.com", UserType.SUPPORT, "Support User", true, null, null);
+	    User admin = new User("admin", encoder.encode("password"), "admin@app.com", UserType.ADMIN, "Admin Admin", true, null, null);
+	    User customer = new User("customer", encoder.encode("password"), "customer@app.com", UserType.CUSTOMER, "Customer User", true, null, null);
+	    ServiceLayerAgreement sla = new ServiceLayerAgreement("SLA1", "SLA1", SLAPriority.MEDIUM, 10, 20);
+	    return args -> {
+	       userRepository.save(admin);
+	       userRepository.save(support);
+	       userRepository.save(customer);
+	       serviceLayerAgreementRepository.save(sla);
+	       ticketRepository.save(new Ticket("Logging issue", "User is not able to login", TicketCategory.INCIDENT, TicketStatus.OPEN, sla, null, support, customer, null, null, Collections.emptyList()));
+	    };
 	}
 }

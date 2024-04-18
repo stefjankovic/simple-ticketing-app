@@ -12,6 +12,7 @@ import com.stefanj.simpleticketingapp.model.TicketStatus;
 import com.stefanj.simpleticketingapp.model.User;
 import com.stefanj.simpleticketingapp.model.UserGroup;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,7 +24,9 @@ import lombok.NoArgsConstructor;
 @Builder
 public class TicketDTO {
 	private Long id;
+	@Schema(requiredMode = Schema.RequiredMode.REQUIRED)
 	private String title;
+	@Schema(requiredMode = Schema.RequiredMode.REQUIRED)
 	private String description;
 	private String category;
 	private String status;
@@ -43,6 +46,7 @@ public class TicketDTO {
 		ticket.setCategory(TicketCategory.fromValue(ticketDTO.getCategory()));
 		ticket.setStatus(TicketStatus.fromValue(ticketDTO.getStatus()));
 		ticket.setSla(ServiceLayerAgreementDTO.toEntity(ticketDTO.getSla()));
+		// TODO this shold be changed when updating ticket status to resolved
 		ticket.setResolvedDate(Date.from(ticketDTO.getResolvedDate().atZone(ZoneId.systemDefault()).toInstant()));
 		
 		User resolvedByUser = new User();
@@ -69,6 +73,21 @@ public class TicketDTO {
 	}
 	
 	public static TicketDTO fromEntity(Ticket ticket) {
-		return null;
+		return TicketDTO.builder()
+				.id(ticket.getId())
+				.title(ticket.getTitle())
+				.description(ticket.getDescription())
+				.category(ticket.getCategory().getCode())
+				.status(ticket.getStatus().getCode())
+				.sla(ServiceLayerAgreementDTO.fromEntity(ticket.getSla()))
+				.resolvedDate(ticket.getResolvedDate().toInstant()
+					      .atZone(ZoneId.systemDefault())
+					      .toLocalDateTime())
+				.resolvedBy(UserDTO.fromEntity(ticket.getResolvedBy()))
+				.assignedTo(UserDTO.fromEntity(ticket.getAssignedTo()))
+				.createdBy(UserDTO.fromEntity(ticket.getCreatedBy()))
+				.userGroup(UserGroupDTO.fromEntity(ticket.getUserGroup()))
+				.commentIds(ticket.getComments().stream().map(c -> c.getId()).toList())
+				.build();
 	}
 }

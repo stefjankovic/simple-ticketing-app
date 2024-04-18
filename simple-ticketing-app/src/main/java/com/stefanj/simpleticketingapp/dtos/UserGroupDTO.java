@@ -5,6 +5,7 @@ import java.util.List;
 import com.stefanj.simpleticketingapp.model.User;
 import com.stefanj.simpleticketingapp.model.UserGroup;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,6 +17,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class UserGroupDTO {
 	private Long id;
+	@Schema(requiredMode = Schema.RequiredMode.REQUIRED)
 	private String name;
 	private String description;
 	private List<Long> userIds;

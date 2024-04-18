@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.stefanj.simpleticketingapp.dtos.UserGroupDTO;
 import com.stefanj.simpleticketingapp.services.UserGroupService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
@@ -35,12 +36,14 @@ public class UserGroupController {
 	
 	@PreAuthorize("hasAuthority('SCOPE_Admin')")
 	@GetMapping
+	@Operation(summary = "List all user groups")
 	public ResponseEntity<List<UserGroupDTO>> getUserGroups() {
 		logger.debug(getClass().getSimpleName() + ".getUserGroups: Start.");
-		return new ResponseEntity<>(userGroupService.getAll().stream().map(sla -> UserGroupDTO.fromEntity(sla)).toList(), HttpStatus.OK);
+		return new ResponseEntity<>(userGroupService.getAll().stream().map(UserGroupDTO::fromEntity).toList(), HttpStatus.OK);
 	}
 	
 	@GetMapping("/{id}")
+	@Operation(summary = "Get user group", description = "Get user group by id")
 	public ResponseEntity<UserGroupDTO> getUserGroupById(@PathVariable Long id, Authentication authentication) {
 		logger.debug(getClass().getSimpleName() + ".getUserGroupById: Called for id (" + id + ").");
 		return new ResponseEntity<>(UserGroupDTO.fromEntity(userGroupService.getById(id, authentication.getName())), HttpStatus.OK);
@@ -48,6 +51,7 @@ public class UserGroupController {
 
 	@PreAuthorize("hasAuthority('SCOPE_Admin')")
 	@PostMapping
+	@Operation(summary = "Create user group")
 	public ResponseEntity<UserGroupDTO> createUserGroup(UserGroupDTO userGroupDTO) {
 		logger.debug(getClass().getSimpleName() + ".createUserGroup: Called for " + userGroupDTO + ".");
 		return new ResponseEntity<>(UserGroupDTO.fromEntity(userGroupService.save(UserGroupDTO.toEntity(userGroupDTO))), HttpStatus.CREATED);
@@ -55,6 +59,7 @@ public class UserGroupController {
 	
 	@PreAuthorize("hasAuthority('SCOPE_Admin')")
 	@PutMapping
+	@Operation(summary = "Update user group")
 	public ResponseEntity<UserGroupDTO> updateUserGroup(UserGroupDTO userGroupDTO) {
 		logger.debug(getClass().getSimpleName() + ".updateUserGroup: Called for " + userGroupDTO + ".");
 		return new ResponseEntity<>(UserGroupDTO.fromEntity(userGroupService.update(UserGroupDTO.toEntity(userGroupDTO))), HttpStatus.OK);
@@ -62,6 +67,7 @@ public class UserGroupController {
 	
 	@PreAuthorize("hasAuthority('SCOPE_Admin')")
 	@DeleteMapping("/{id}")
+	@Operation(summary = "Delete user group")
 	public ResponseEntity<String> deleteUserGroup(@PathVariable Long id) {
 		logger.debug(getClass().getSimpleName() + ".deleteUserGroup: Called for id (" + id + ").");
 		userGroupService.delete(id);

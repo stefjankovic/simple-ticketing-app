@@ -59,6 +59,7 @@ public class SecurityConfiguration {
 				.headers(headers -> headers.frameOptions(o -> o.sameOrigin()))
 				.oauth2ResourceServer(o -> o.jwt(Customizer.withDefaults()))
 				.httpBasic(Customizer.withDefaults())
+				// TODO add configuration to pass exception to exception handler
 				.build();
 	}
 	

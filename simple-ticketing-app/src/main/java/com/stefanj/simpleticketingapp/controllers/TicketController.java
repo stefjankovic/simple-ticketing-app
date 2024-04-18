@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.stefanj.simpleticketingapp.dtos.TicketDTO;
 import com.stefanj.simpleticketingapp.services.TicketService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
@@ -34,12 +35,14 @@ public class TicketController {
 	}
 	
 	@GetMapping
+	@Operation(summary = "List all tickets")
 	public ResponseEntity<List<TicketDTO>> getTickets(Authentication authentication) {
 		logger.debug(getClass().getSimpleName() + ".getTickets: Start.");
-		return new ResponseEntity<>(ticketService.getAllForUser(authentication.getName()).stream().map(ticket -> TicketDTO.fromEntity(ticket)).toList(), HttpStatus.OK);
+		return new ResponseEntity<>(ticketService.getAllForUser(authentication.getName()).stream().map(TicketDTO::fromEntity).toList(), HttpStatus.OK);
 	}
 	
 	@GetMapping("/{id}")
+	@Operation(summary = "Get ticket", description = "Get ticket by id")
 	public ResponseEntity<TicketDTO> getTicketById(@PathVariable Long id, Authentication authentication) {
 		logger.debug(getClass().getSimpleName() + ".getTicketById: Called for id (" + id + ").");
 		return new ResponseEntity<>(TicketDTO.fromEntity(ticketService.getById(id, authentication.getName())), HttpStatus.OK);
@@ -47,6 +50,7 @@ public class TicketController {
 
 	@PreAuthorize("hasAuthority('SCOPE_Customer')")
 	@PostMapping
+	@Operation(summary = "Create ticket")
 	public ResponseEntity<TicketDTO> createTicket(TicketDTO ticketDTO) {
 		logger.debug(getClass().getSimpleName() + ".createTicket: Called for " + ticketDTO + ".");
 		return new ResponseEntity<>(TicketDTO.fromEntity(ticketService.save(TicketDTO.toEntity(ticketDTO))), HttpStatus.CREATED);
@@ -54,6 +58,7 @@ public class TicketController {
 	
 	@PreAuthorize("hasAuthority('SCOPE_SupportStaff') or hasAuthority('SCOPE_Admin')")
 	@PutMapping
+	@Operation(summary = "Update ticket")
 	public ResponseEntity<TicketDTO> updateTicket(TicketDTO ticketDTO, Authentication authentication) {
 		logger.debug(getClass().getSimpleName() + ".updateTicket: Called for " + ticketDTO + ".");
 		// TODO ticket can only be assigned to SupportStaff
@@ -63,6 +68,7 @@ public class TicketController {
 	
 	@PreAuthorize("hasAuthority('SCOPE_Customer') or hasAuthority('SCOPE_Admin')")
 	@DeleteMapping("/{id}")
+	@Operation(summary = "Delete ticket")
 	public ResponseEntity<String> deleteTicket(@PathVariable Long id) {
 		logger.debug(getClass().getSimpleName() + ".deleteTicket: Called for id (" + id + ").");
 		ticketService.delete(id);

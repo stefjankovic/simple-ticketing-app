@@ -7,7 +7,7 @@ import com.stefanj.simpleticketingapp.model.Comment;
 public interface CommentService {
 	Comment getById(Long id, String authenticatedUserName);
 	Comment save(Comment comment);
-	Comment update(Comment comment);
+	Comment update(Comment comment, String authenticatedUserName);
 	void delete(Long id);
 	List<Comment> getByTicketId(Long id, String authenticatedUserName);
 }

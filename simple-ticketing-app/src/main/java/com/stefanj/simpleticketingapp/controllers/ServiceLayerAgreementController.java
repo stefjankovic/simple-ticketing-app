@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.stefanj.simpleticketingapp.dtos.ServiceLayerAgreementDTO;
 import com.stefanj.simpleticketingapp.services.ServiceLayerAgreementService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
@@ -33,12 +34,14 @@ public class ServiceLayerAgreementController {
 	}
 	
 	@GetMapping
+	@Operation(summary = "List all SLAs", description = "List all service layer agreements")
 	public ResponseEntity<List<ServiceLayerAgreementDTO>> getSLAs() {
 		logger.debug(getClass().getSimpleName() + ".getSLAs: Start.");
-		return new ResponseEntity<>(serviceLayerAgreementService.getAll().stream().map(sla -> ServiceLayerAgreementDTO.fromEntity(sla)).toList(), HttpStatus.OK);
+		return new ResponseEntity<>(serviceLayerAgreementService.getAll().stream().map(ServiceLayerAgreementDTO::fromEntity).toList(), HttpStatus.OK);
 	}
 	
 	@GetMapping("/{id}")
+	@Operation(summary = "Get SLA", description = "Get service layer agreement by id")
 	public ResponseEntity<ServiceLayerAgreementDTO> getSLAById(@PathVariable Long id) {
 		logger.debug(getClass().getSimpleName() + ".getSLAById: Called for id (" + id + ").");
 		return new ResponseEntity<>(ServiceLayerAgreementDTO.fromEntity(serviceLayerAgreementService.getById(id)), HttpStatus.OK);
@@ -46,6 +49,7 @@ public class ServiceLayerAgreementController {
 
 	@PreAuthorize("hasAuthority('SCOPE_Admin')")
 	@PostMapping
+	@Operation(summary = "Create SLA", description = "Create service layer agreement")
 	public ResponseEntity<ServiceLayerAgreementDTO> createSLA(ServiceLayerAgreementDTO slaDTO) {
 		logger.debug(getClass().getSimpleName() + ".createSLA: Called for " + slaDTO + ".");
 		return new ResponseEntity<>(ServiceLayerAgreementDTO.fromEntity(serviceLayerAgreementService.save(ServiceLayerAgreementDTO.toEntity(slaDTO))), HttpStatus.CREATED);
@@ -53,6 +57,7 @@ public class ServiceLayerAgreementController {
 	
 	@PreAuthorize("hasAuthority('SCOPE_Admin')")
 	@PutMapping
+	@Operation(summary = "Update SLA", description = "Update service layer agreement")
 	public ResponseEntity<ServiceLayerAgreementDTO> updateSLA(ServiceLayerAgreementDTO slaDTO) {
 		logger.debug(getClass().getSimpleName() + ".updateSLA: Called for " + slaDTO + ".");
 		return new ResponseEntity<>(ServiceLayerAgreementDTO.fromEntity(serviceLayerAgreementService.update(ServiceLayerAgreementDTO.toEntity(slaDTO))), HttpStatus.OK);
@@ -60,6 +65,7 @@ public class ServiceLayerAgreementController {
 	
 	@PreAuthorize("hasAuthority('SCOPE_Admin')")
 	@DeleteMapping("/{id}")
+	@Operation(summary = "Delete SLA", description = "Delete service layer agreement")
 	public ResponseEntity<String> deleteSLA(@PathVariable Long id) {
 		logger.debug(getClass().getSimpleName() + ".deleteSLA: Called for id (" + id + ").");
 		serviceLayerAgreementService.delete(id);

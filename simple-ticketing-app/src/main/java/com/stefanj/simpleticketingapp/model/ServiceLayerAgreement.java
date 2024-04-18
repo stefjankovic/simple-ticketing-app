@@ -21,7 +21,7 @@ public class ServiceLayerAgreement extends AbstractEntity {
 	@Column(nullable = false)
 	private SLAPriority priority;
 	@Column(nullable = false)
-	private Long responseTime;
+	private Integer responseTime;
 	@Column(nullable = false)
-	private Long resolutionTime;
+	private Integer resolutionTime;
 }

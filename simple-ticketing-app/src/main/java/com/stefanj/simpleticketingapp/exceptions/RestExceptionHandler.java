@@ -9,6 +9,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -25,6 +26,24 @@ public class RestExceptionHandler {
 	@ResponseStatus(HttpStatus.NOT_FOUND)
 	public ResponseEntity<ApiError> handle(NotFoundException exception) {	
 		return makeResponseEntity(exception, HttpStatus.NOT_FOUND);
+    }
+	
+	@ExceptionHandler(BadCredentialsException.class)
+	@ResponseStatus(HttpStatus.UNAUTHORIZED)
+	public ResponseEntity<ApiError> handle(BadCredentialsException exception) {
+		String exceptionMessage = exception.getMessage() == null ? "" : exception.getMessage();
+        
+        ApiError apiError = ApiError.builder()
+        		.timestamp(LocalDateTime.now())
+        		.responseStatus(HttpStatus.UNAUTHORIZED)
+        		.code(ErrorCode.BAD_USER_CREDENTIALS_PROVIDED.getCode())
+        		.message(ErrorCode.BAD_USER_CREDENTIALS_PROVIDED.getDescription())
+        		.details(Map.of("exceptionMessage", exceptionMessage))
+        		.build();
+        		
+        return ResponseEntity
+        		.status(HttpStatus.UNAUTHORIZED)
+        		.body(apiError);
     }
 	
 	@ExceptionHandler(MethodArgumentNotValidException.class)
@@ -60,7 +79,7 @@ public class RestExceptionHandler {
         		.build();
         		
         return ResponseEntity
-        		.status(HttpStatus.BAD_REQUEST)
+        		.status(HttpStatus.FORBIDDEN)
         		.body(apiError);
     }
 	

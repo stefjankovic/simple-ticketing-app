@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.stefanj.simpleticketingapp.services.impl.TokenService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -26,6 +27,7 @@ public class AuthController {
 	
 	@PostMapping("/token")
 	@SecurityRequirement(name = "Basic Authentication")
+	@Operation(summary = "Get access token", description = "Get access token based on provided username and password")
 	public String token(Authentication authentication) {
 		logger.debug("Token requested for user: " + authentication.getName());
 		String token = tokenService.generateToken(authentication);

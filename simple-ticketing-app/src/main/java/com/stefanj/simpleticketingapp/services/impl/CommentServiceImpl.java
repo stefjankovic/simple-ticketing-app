@@ -68,11 +68,18 @@ public class CommentServiceImpl implements CommentService {
 	}
 
 	@Override
-	public Comment update(Comment comment) {
+	public Comment update(Comment comment, String authenticatedUserName) {
 		logger.debug(getClass().getSimpleName() + ".update: Start.");
-		if (!commentRepository.existsById(comment.getId())) throw new NotFoundException(ErrorCode.RESOURCE_NOT_FOUND, new HashMap<String, Object>(Map.of("id", comment.getId())));
-		Comment updatedComment = commentRepository.save(comment);
-		logger.debug(getClass().getSimpleName() + ".update: End. Id = '" + updatedComment.getId() + "'.");
-		return updatedComment;
+		Optional<Comment> originalCommentOptional = commentRepository.findById(comment.getId());
+		if (originalCommentOptional.isEmpty()) throw new NotFoundException(ErrorCode.RESOURCE_NOT_FOUND, new HashMap<String, Object>(Map.of("id", comment.getId())));
+		Comment originalComment = originalCommentOptional.get();
+		if (originalComment.getUser().getUserName().equals(authenticatedUserName)) {
+			originalComment.setText(comment.getText());
+			Comment updatedComment = commentRepository.save(originalComment);
+			logger.debug(getClass().getSimpleName() + ".update: End. Id = '" + updatedComment.getId() + "'.");
+			return updatedComment;
+		} else {
+			throw new AccessDeniedException("Unauthorized to edit comment.");
+		}
 	}
 }

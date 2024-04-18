@@ -6,6 +6,7 @@ import com.stefanj.simpleticketingapp.model.User;
 import com.stefanj.simpleticketingapp.model.UserGroup;
 import com.stefanj.simpleticketingapp.model.UserType;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,9 +18,13 @@ import lombok.NoArgsConstructor;
 @Builder
 public class UserDTO {
 	private Long id;
+	@Schema(requiredMode = Schema.RequiredMode.REQUIRED)
 	private String userName;
+	@Schema(requiredMode = Schema.RequiredMode.REQUIRED)
 	private String password;
+	@Schema(requiredMode = Schema.RequiredMode.REQUIRED)
 	private String email;
+	@Schema(requiredMode = Schema.RequiredMode.REQUIRED)
 	private String userType;
 	private String fullName;
 	private Boolean active;

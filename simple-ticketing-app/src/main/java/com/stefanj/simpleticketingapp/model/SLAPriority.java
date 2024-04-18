@@ -3,6 +3,7 @@ package com.stefanj.simpleticketingapp.model;
 public enum SLAPriority {
 	LOW("Low"), 
 	MEDIUM("Medium"), 
+	HIGH("High"),
 	URGENT("Urgent");
 
 	private final String code;

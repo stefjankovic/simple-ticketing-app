@@ -4,6 +4,7 @@ import com.stefanj.simpleticketingapp.model.Comment;
 import com.stefanj.simpleticketingapp.model.Ticket;
 import com.stefanj.simpleticketingapp.model.User;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,9 +17,11 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CommentDTO {
 	private Long id;
+	@Schema(requiredMode = Schema.RequiredMode.REQUIRED)
 	private Long ticketId;
 	private Long userId;
-	@NotBlank(message = "Comment is mandatory")
+	@NotBlank(message = "Comment message is mandatory")
+	@Schema(requiredMode = Schema.RequiredMode.REQUIRED)
 	private String text;
 	
 	public static Comment toEntity(CommentDTO commentDTO) {
