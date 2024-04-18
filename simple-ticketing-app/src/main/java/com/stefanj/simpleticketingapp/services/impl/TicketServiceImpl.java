@@ -89,6 +89,7 @@ public class TicketServiceImpl implements TicketService {
 	@Override
 	public Ticket update(Ticket ticket, String authenticatedUserName) {
 		logger.debug(getClass().getSimpleName() + ".update: Start.");
+		// TODO refactor and split into two classes, case when ADMIN user is doing update and case when SUPPORT
 		
 		Optional<Ticket> originalTicketOptional = ticketRepository.findById(ticket.getId());
 		if (originalTicketOptional.isEmpty()) throw new NotFoundException(ErrorCode.RESOURCE_NOT_FOUND, new HashMap<String, Object>(Map.of("id", ticket.getId())));
@@ -119,7 +120,7 @@ public class TicketServiceImpl implements TicketService {
 
 	private void updateTicketStatus(Ticket originalTicket, TicketStatus newStatus) {
 		if (newStatus == null) return;
-		// TODO cover all status changes
+		// TODO cover all status changes, make it switch statement
 		TicketStatus originalTicketStatus = originalTicket.getStatus();
 		if (originalTicketStatus.equals(TicketStatus.CLOSED)) throw new TicketStatusChangeException(ErrorCode.ILLEGAL_TICKET_STATUS_CHANGE, 
 				new HashMap<String, Object>(Map.of("ticketStatus", originalTicketStatus.getCode(), "newTicketStatus", newStatus.getCode())));
