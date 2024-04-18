@@ -17,17 +17,21 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class UserDTO {
+	@Schema(description = "Id of the user")
 	private Long id;
-	@Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+	@Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Username of the user")
 	private String userName;
-	@Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+	@Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Password")
 	private String password;
-	@Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+	@Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Email address of the user")
 	private String email;
-	@Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+	@Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Type of the user", allowableValues = {"Admin", "SupportStaff", "Customer", "Auditor"})
 	private String userType;
+	@Schema(description = "Full (First and Last) name of the user")
 	private String fullName;
+	@Schema(description = "User state")
 	private Boolean active;
+	@Schema(description = "List of user groups' ids")
 	private List<Long> userGroupIds;
 	
 	public static User toEntity(UserDTO userDTO) {

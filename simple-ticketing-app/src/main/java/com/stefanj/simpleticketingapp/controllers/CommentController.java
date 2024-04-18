@@ -38,8 +38,8 @@ public class CommentController {
 	@PreAuthorize("hasAuthority('SCOPE_Customer') or hasAuthority('SCOPE_SupportStaff')")
 	@PostMapping
 	@Operation(summary = "Create comment", description = "Create comment")
-	public ResponseEntity<CommentDTO> createComment(@RequestBody CommentDTO commentDTO) {
-		return new ResponseEntity<>(CommentDTO.fromEntity(commentService.save(CommentDTO.toEntity(commentDTO))), HttpStatus.CREATED);
+	public ResponseEntity<CommentDTO> createComment(@RequestBody CommentDTO commentDTO, Authentication authentication) {
+		return new ResponseEntity<>(CommentDTO.fromEntity(commentService.save(CommentDTO.toEntity(commentDTO), authentication.getName())), HttpStatus.CREATED);
 	}
 	
 	@PutMapping("/{id}")

@@ -14,6 +14,7 @@ import com.stefanj.simpleticketingapp.exceptions.ErrorCode;
 import com.stefanj.simpleticketingapp.exceptions.NotFoundException;
 import com.stefanj.simpleticketingapp.model.Comment;
 import com.stefanj.simpleticketingapp.model.Ticket;
+import com.stefanj.simpleticketingapp.model.User;
 import com.stefanj.simpleticketingapp.model.UserType;
 import com.stefanj.simpleticketingapp.repositories.CommentRepository;
 import com.stefanj.simpleticketingapp.repositories.TicketRepository;
@@ -44,8 +45,15 @@ public class CommentServiceImpl implements CommentService {
 	}
 
 	@Override
-	public Comment save(Comment comment) {
+	public Comment save(Comment comment, String authenticatedUserName) {
 		logger.debug(getClass().getSimpleName() + ".save: Start.");
+		User user = userRepository.findByUserName(authenticatedUserName).get();
+		comment.setUser(user);
+		
+		Optional<Ticket> ticketOptional = ticketRepository.findById(comment.getTicket().getId());
+		if (ticketOptional.isEmpty()) throw new NotFoundException(ErrorCode.RESOURCE_NOT_FOUND, new HashMap<String, Object>(Map.of("ticketId", comment.getTicket().getId())));
+		comment.setTicket(ticketOptional.get());
+		
 		Comment savedComment = commentRepository.save(comment);
 		logger.debug(getClass().getSimpleName() + ".save: End. Id = '" + savedComment.getId() + "'.");
 		return savedComment;

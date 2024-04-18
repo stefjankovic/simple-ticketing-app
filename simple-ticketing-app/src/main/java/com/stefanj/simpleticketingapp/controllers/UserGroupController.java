@@ -20,6 +20,7 @@ import com.stefanj.simpleticketingapp.dtos.UserGroupDTO;
 import com.stefanj.simpleticketingapp.services.UserGroupService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
@@ -44,7 +45,7 @@ public class UserGroupController {
 	
 	@GetMapping("/{id}")
 	@Operation(summary = "Get user group", description = "Get user group by id")
-	public ResponseEntity<UserGroupDTO> getUserGroupById(@PathVariable Long id, Authentication authentication) {
+	public ResponseEntity<UserGroupDTO> getUserGroupById(@PathVariable @Parameter(description = "Group Id") Long id, Authentication authentication) {
 		logger.debug(getClass().getSimpleName() + ".getUserGroupById: Called for id (" + id + ").");
 		return new ResponseEntity<>(UserGroupDTO.fromEntity(userGroupService.getById(id, authentication.getName())), HttpStatus.OK);
 	}
@@ -68,7 +69,7 @@ public class UserGroupController {
 	@PreAuthorize("hasAuthority('SCOPE_Admin')")
 	@DeleteMapping("/{id}")
 	@Operation(summary = "Delete user group")
-	public ResponseEntity<String> deleteUserGroup(@PathVariable Long id) {
+	public ResponseEntity<String> deleteUserGroup(@PathVariable @Parameter(description = "Group Id") Long id) {
 		logger.debug(getClass().getSimpleName() + ".deleteUserGroup: Called for id (" + id + ").");
 		userGroupService.delete(id);
 		return ResponseEntity.ok().build();

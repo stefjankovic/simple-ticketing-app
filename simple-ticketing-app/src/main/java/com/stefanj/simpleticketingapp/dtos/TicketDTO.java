@@ -2,7 +2,6 @@ package com.stefanj.simpleticketingapp.dtos;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Date;
 import java.util.List;
 
 import com.stefanj.simpleticketingapp.model.Comment;
@@ -23,19 +22,29 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class TicketDTO {
+	@Schema(description = "Id of the ticket")
 	private Long id;
-	@Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+	@Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Title of the ticket")
 	private String title;
-	@Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+	@Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Description of the ticket")
 	private String description;
+	@Schema(description = "Category of the ticket", allowableValues = {"ServiceRequest", "Incident", "Problem", "ChangeRequest"})
 	private String category;
+	@Schema(description = "Status of the ticket", allowableValues = {"Open", "InProgress", "OnHold", "Resolved", "Closed"})
 	private String status;
+	@Schema(description = "Service layer agreement related to the ticket")
 	private ServiceLayerAgreementDTO sla;
+	@Schema(description = "Date and time when ticket was resolved")
 	private LocalDateTime resolvedDate;
+	@Schema(description = "User to whom the ticked is assigned")
 	private UserDTO assignedTo;
+	@Schema(description = "User who created the ticket")
 	private UserDTO createdBy;
+	@Schema(description = "User who resolved the ticket")
 	private UserDTO resolvedBy;
+	@Schema(description = "The group to which the ticket belongs")
 	private UserGroupDTO userGroup;
+	@Schema(description = "List of the ticket's comments")
 	private List<Long> commentIds;
 	
 	public static Ticket toEntity(TicketDTO ticketDTO) {
@@ -46,8 +55,6 @@ public class TicketDTO {
 		ticket.setCategory(TicketCategory.fromValue(ticketDTO.getCategory()));
 		ticket.setStatus(TicketStatus.fromValue(ticketDTO.getStatus()));
 		ticket.setSla(ServiceLayerAgreementDTO.toEntity(ticketDTO.getSla()));
-		// TODO this shold be changed when updating ticket status to resolved
-		ticket.setResolvedDate(Date.from(ticketDTO.getResolvedDate().atZone(ZoneId.systemDefault()).toInstant()));
 		
 		User resolvedByUser = new User();
 		resolvedByUser.setId(ticketDTO.getResolvedBy().getId());

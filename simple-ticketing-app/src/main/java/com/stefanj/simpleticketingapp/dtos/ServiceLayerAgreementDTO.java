@@ -14,8 +14,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class ServiceLayerAgreementDTO {
+	@Schema(description = "Id of the service layer agreement")
 	private Long id;
+	@Schema(description = "Name of the service layer agreement")
 	private String name;
+	@Schema(description = "Description of the service layer agreement")
 	private String description;
 	@Schema(description = "Ticket priority")
 	private String priority;

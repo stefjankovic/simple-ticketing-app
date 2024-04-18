@@ -16,10 +16,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class UserGroupDTO {
+	@Schema(description = "Id of the user group")
 	private Long id;
-	@Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+	@Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Name of the user group")
 	private String name;
+	@Schema(description = "Description of the user group")
 	private String description;
+	@Schema(description = "List of user ids which belong to the user group")
 	private List<Long> userIds;
 	
 	public static UserGroup toEntity(UserGroupDTO userGroupDTO) {

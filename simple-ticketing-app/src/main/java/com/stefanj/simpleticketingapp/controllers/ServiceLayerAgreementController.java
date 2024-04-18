@@ -19,6 +19,7 @@ import com.stefanj.simpleticketingapp.dtos.ServiceLayerAgreementDTO;
 import com.stefanj.simpleticketingapp.services.ServiceLayerAgreementService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
@@ -66,7 +67,7 @@ public class ServiceLayerAgreementController {
 	@PreAuthorize("hasAuthority('SCOPE_Admin')")
 	@DeleteMapping("/{id}")
 	@Operation(summary = "Delete SLA", description = "Delete service layer agreement")
-	public ResponseEntity<String> deleteSLA(@PathVariable Long id) {
+	public ResponseEntity<String> deleteSLA(@PathVariable @Parameter(description = "SLA Id") Long id) {
 		logger.debug(getClass().getSimpleName() + ".deleteSLA: Called for id (" + id + ").");
 		serviceLayerAgreementService.delete(id);
 		return ResponseEntity.ok().build();

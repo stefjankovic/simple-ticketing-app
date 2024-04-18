@@ -16,12 +16,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class CommentDTO {
+	@Schema(description = "Id of the comment")
 	private Long id;
-	@Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+	@Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Id of the ticket to which comment belongs")
 	private Long ticketId;
+	@Schema(description = "Id of the user which created a comment")
 	private Long userId;
 	@NotBlank(message = "Comment message is mandatory")
-	@Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+	@Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Comment message")
 	private String text;
 	
 	public static Comment toEntity(CommentDTO commentDTO) {

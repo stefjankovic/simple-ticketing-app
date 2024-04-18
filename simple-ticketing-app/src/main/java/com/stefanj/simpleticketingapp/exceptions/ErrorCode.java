@@ -5,7 +5,8 @@ public enum ErrorCode {
 	VALIDATION_FAILED("ER001", "Validation failed."), 
 	RESOURCE_NOT_FOUND("ER002", "Resource for provided criteria is not found in repository."),
 	API_ENDPOINT_ACCESS_DENIED("ER003", "User does not have privilege to use this api endpoint."),
-	BAD_USER_CREDENTIALS_PROVIDED("ER004","Entered user credentials are not valid.");
+	BAD_USER_CREDENTIALS_PROVIDED("ER004","Entered user credentials are not valid."),
+	ILLEGAL_TICKET_STATUS_CHANGE("ER005","Ticket cannot change to provided status.");
 	
 	private String code;
 	private String description;

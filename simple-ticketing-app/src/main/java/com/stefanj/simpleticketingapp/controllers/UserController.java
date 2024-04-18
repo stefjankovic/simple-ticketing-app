@@ -20,6 +20,7 @@ import com.stefanj.simpleticketingapp.dtos.UserDTO;
 import com.stefanj.simpleticketingapp.services.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
@@ -45,7 +46,7 @@ public class UserController {
 
 	@GetMapping("/{id}")
 	@Operation(summary = "Get user", description = "Get user by id")
-	public ResponseEntity<UserDTO> getUserById(@PathVariable Long id, Authentication authentication) {
+	public ResponseEntity<UserDTO> getUserById(@PathVariable @Parameter(description = "User Id") Long id, Authentication authentication) {
 		logger.debug(getClass().getSimpleName() + ".getUserById: Called for id (" + id + ").");
 		return new ResponseEntity<>(UserDTO.fromEntity(userService.getById(id, authentication.getName())), HttpStatus.OK);
 	}
@@ -69,7 +70,7 @@ public class UserController {
 	@PreAuthorize("hasAuthority('SCOPE_Admin')")
 	@DeleteMapping("/{id}")
 	@Operation(summary = "Delete user")
-	public ResponseEntity<String> deleteUser(@PathVariable Long id) {
+	public ResponseEntity<String> deleteUser(@PathVariable @Parameter(description = "User Id") Long id) {
 		logger.debug(getClass().getSimpleName() + ".deleteUser: Called for id (" + id + ").");
 		userService.delete(id);
 		return ResponseEntity.ok().build();

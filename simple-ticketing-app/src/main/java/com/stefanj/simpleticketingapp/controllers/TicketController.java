@@ -20,6 +20,7 @@ import com.stefanj.simpleticketingapp.dtos.TicketDTO;
 import com.stefanj.simpleticketingapp.services.TicketService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
@@ -43,7 +44,7 @@ public class TicketController {
 	
 	@GetMapping("/{id}")
 	@Operation(summary = "Get ticket", description = "Get ticket by id")
-	public ResponseEntity<TicketDTO> getTicketById(@PathVariable Long id, Authentication authentication) {
+	public ResponseEntity<TicketDTO> getTicketById(@PathVariable @Parameter(description = "Ticket Id") Long id, Authentication authentication) {
 		logger.debug(getClass().getSimpleName() + ".getTicketById: Called for id (" + id + ").");
 		return new ResponseEntity<>(TicketDTO.fromEntity(ticketService.getById(id, authentication.getName())), HttpStatus.OK);
 	}
@@ -53,7 +54,7 @@ public class TicketController {
 	@Operation(summary = "Create ticket")
 	public ResponseEntity<TicketDTO> createTicket(TicketDTO ticketDTO, Authentication authentication) {
 		logger.debug(getClass().getSimpleName() + ".createTicket: Called for " + ticketDTO + ".");
-		return new ResponseEntity<>(TicketDTO.fromEntity(ticketService.save(TicketDTO.toEntity(ticketDTO), authentication.getName())), HttpStatus.CREATED);
+		return new ResponseEntity<>(TicketDTO.fromEntity(ticketService.create(TicketDTO.toEntity(ticketDTO), authentication.getName())), HttpStatus.CREATED);
 	}
 	
 	@PreAuthorize("hasAuthority('SCOPE_SupportStaff') or hasAuthority('SCOPE_Admin')")
@@ -61,15 +62,13 @@ public class TicketController {
 	@Operation(summary = "Update ticket")
 	public ResponseEntity<TicketDTO> updateTicket(TicketDTO ticketDTO, Authentication authentication) {
 		logger.debug(getClass().getSimpleName() + ".updateTicket: Called for " + ticketDTO + ".");
-		// TODO ticket can only be assigned to SupportStaff
-		// created by cannot be changed...
-		return new ResponseEntity<>(TicketDTO.fromEntity(ticketService.update(TicketDTO.toEntity(ticketDTO))), HttpStatus.OK);
+		return new ResponseEntity<>(TicketDTO.fromEntity(ticketService.update(TicketDTO.toEntity(ticketDTO), authentication.getName())), HttpStatus.OK);
 	}
 	
 	@PreAuthorize("hasAuthority('SCOPE_Customer') or hasAuthority('SCOPE_Admin')")
 	@DeleteMapping("/{id}")
 	@Operation(summary = "Delete ticket")
-	public ResponseEntity<String> deleteTicket(@PathVariable Long id) {
+	public ResponseEntity<String> deleteTicket(@PathVariable @Parameter(description = "Ticket Id") Long id) {
 		logger.debug(getClass().getSimpleName() + ".deleteTicket: Called for id (" + id + ").");
 		ticketService.delete(id);
 		return ResponseEntity.ok().build();

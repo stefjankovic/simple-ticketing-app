@@ -1,5 +1,6 @@
 package com.stefanj.simpleticketingapp.services.impl;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,8 +13,11 @@ import org.springframework.stereotype.Service;
 
 import com.stefanj.simpleticketingapp.exceptions.ErrorCode;
 import com.stefanj.simpleticketingapp.exceptions.NotFoundException;
+import com.stefanj.simpleticketingapp.exceptions.TicketStatusChangeException;
 import com.stefanj.simpleticketingapp.model.ServiceLayerAgreement;
 import com.stefanj.simpleticketingapp.model.Ticket;
+import com.stefanj.simpleticketingapp.model.TicketStatus;
+import com.stefanj.simpleticketingapp.model.User;
 import com.stefanj.simpleticketingapp.model.UserGroup;
 import com.stefanj.simpleticketingapp.model.UserType;
 import com.stefanj.simpleticketingapp.repositories.ServiceLayerAgreementRepository;
@@ -51,12 +55,13 @@ public class TicketServiceImpl implements TicketService {
 	}
 
 	@Override
-	public Ticket save(Ticket ticket, String authenticatedUserName) {
+	public Ticket create(Ticket ticket, String authenticatedUserName) {
 		logger.debug(getClass().getSimpleName() + ".save: Start.");
 		Optional<ServiceLayerAgreement> slaOptional = agreementRepository.findById(ticket.getSla().getId());
 		if (slaOptional.isEmpty()) throw new NotFoundException(ErrorCode.RESOURCE_NOT_FOUND, new HashMap<String, Object>(Map.of("slaId", ticket.getSla().getId())));
 		ticket.setSla(slaOptional.get());
 		ticket.setCreatedBy(userRepository.findByUserName(authenticatedUserName).get());
+		ticket.setStatus(TicketStatus.OPEN);
 		
 		Optional<UserGroup> userGroupOptional = userGroupRepository.findById(ticket.getUserGroup().getId());
 		if (userGroupOptional.isPresent()) ticket.setUserGroup(userGroupOptional.get());
@@ -82,11 +87,47 @@ public class TicketServiceImpl implements TicketService {
 	}
 
 	@Override
-	public Ticket update(Ticket ticket) {
+	public Ticket update(Ticket ticket, String authenticatedUserName) {
 		logger.debug(getClass().getSimpleName() + ".update: Start.");
-		if (!ticketRepository.existsById(ticket.getId())) throw new NotFoundException(ErrorCode.RESOURCE_NOT_FOUND, new HashMap<String, Object>(Map.of("id", ticket.getId())));
-		Ticket updatedTicket = ticketRepository.save(ticket);
+		
+		Optional<Ticket> originalTicketOptional = ticketRepository.findById(ticket.getId());
+		if (originalTicketOptional.isEmpty()) throw new NotFoundException(ErrorCode.RESOURCE_NOT_FOUND, new HashMap<String, Object>(Map.of("id", ticket.getId())));
+		
+		Ticket originalTicket = originalTicketOptional.get();
+		User user = userRepository.findByUserName(authenticatedUserName).get();
+		
+		if (user.getType().equals(UserType.SUPPORT) && originalTicket.getAssignedTo() != null 
+				&& !originalTicket.getAssignedTo().getUserName().equals(user.getUserName())) throw new AccessDeniedException("Unauthorized. User not allowed to edit ticket.");
+		
+		if (originalTicket.getAssignedTo() == null) {
+			Optional<User> assignedToUserOptional = userRepository.findById(ticket.getAssignedTo().getId());
+			if (assignedToUserOptional.isEmpty()) throw new NotFoundException(ErrorCode.RESOURCE_NOT_FOUND, new HashMap<String, Object>(Map.of("assignedToUserId", ticket.getAssignedTo().getId())));
+			originalTicket.setAssignedTo(assignedToUserOptional.get());
+		}
+		
+		updateTicketStatus(originalTicket, ticket.getStatus());
+		
+		if (user.getType().equals(UserType.ADMIN)) {
+			Optional<UserGroup> userGroupOptional = userGroupRepository.findById(ticket.getUserGroup().getId());
+			if (userGroupOptional.isPresent()) ticket.setUserGroup(userGroupOptional.get());
+		}
+		
+		Ticket updatedTicket = ticketRepository.save(originalTicket);
 		logger.debug(getClass().getSimpleName() + ".update: End. Id = '" + updatedTicket.getId() + "'.");
 		return updatedTicket;
+	}
+
+	private void updateTicketStatus(Ticket originalTicket, TicketStatus newStatus) {
+		if (newStatus == null) return;
+		// TODO cover all status changes
+		TicketStatus originalTicketStatus = originalTicket.getStatus();
+		if (originalTicketStatus.equals(TicketStatus.CLOSED)) throw new TicketStatusChangeException(ErrorCode.ILLEGAL_TICKET_STATUS_CHANGE, 
+				new HashMap<String, Object>(Map.of("ticketStatus", originalTicketStatus.getCode(), "newTicketStatus", newStatus.getCode())));
+		if ((originalTicketStatus.equals(TicketStatus.OPEN) || originalTicketStatus.equals(TicketStatus.IN_PROGRESS) || originalTicketStatus.equals(TicketStatus.ON_HOLD)) 
+				&& newStatus.equals(TicketStatus.RESOLVED)) {
+			originalTicket.setStatus(TicketStatus.RESOLVED);
+			originalTicket.setResolvedBy(originalTicket.getAssignedTo());
+			originalTicket.setResolvedDate(new Date());
+		}
 	}
 }
