@@ -37,16 +37,16 @@ public class Ticket extends AbstractEntity {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date resolvedDate;
 	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "assigned_to_user_fk", nullable = false)
+    @JoinColumn(name = "assigned_to_user_fk")
 	private User assignedTo;
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by_user_fk", nullable = false)
 	private User createdBy;
 	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "resolved_by_user_fk", nullable = false)
+    @JoinColumn(name = "resolved_by_user_fk")
 	private User resolvedBy;
 	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "group_fk", nullable = false)
+    @JoinColumn(name = "group_fk")
 	private UserGroup userGroup;
 	@OneToMany(mappedBy = "ticket", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	private List<Comment> comments;

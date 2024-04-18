@@ -14,8 +14,10 @@ import com.stefanj.simpleticketingapp.exceptions.ErrorCode;
 import com.stefanj.simpleticketingapp.exceptions.NotFoundException;
 import com.stefanj.simpleticketingapp.model.Comment;
 import com.stefanj.simpleticketingapp.model.Ticket;
+import com.stefanj.simpleticketingapp.model.UserType;
 import com.stefanj.simpleticketingapp.repositories.CommentRepository;
 import com.stefanj.simpleticketingapp.repositories.TicketRepository;
+import com.stefanj.simpleticketingapp.repositories.UserRepository;
 import com.stefanj.simpleticketingapp.services.CommentService;
 
 @Service
@@ -24,10 +26,12 @@ public class CommentServiceImpl implements CommentService {
 	
 	private final TicketRepository ticketRepository;
 	private final CommentRepository commentRepository;
+	private final UserRepository userRepository;
 
-	public CommentServiceImpl(CommentRepository commentRepository, TicketRepository ticketRepository) {
+	public CommentServiceImpl(CommentRepository commentRepository, TicketRepository ticketRepository, UserRepository userRepository) {
 		this.commentRepository = commentRepository;
 		this.ticketRepository = ticketRepository;
+		this.userRepository = userRepository;
 	}
 
 	@Override
@@ -58,8 +62,11 @@ public class CommentServiceImpl implements CommentService {
 	@Override
 	public List<Comment> getByTicketId(Long ticketId, String authenticatedUserName) {
 		logger.debug(getClass().getSimpleName() + ".getByTicketId: ticketId (" + ticketId + ").");
-		Ticket ticket = ticketRepository.getReferenceById(ticketId);
-		// TODO admin can fetch ticket and its comments
+		Optional<Ticket> ticketOptional = ticketRepository.findById(ticketId);
+		if (ticketOptional.isEmpty()) throw new NotFoundException(ErrorCode.RESOURCE_NOT_FOUND, new HashMap<String, Object>(Map.of("ticketId", ticketId)));
+		Ticket ticket = ticketOptional.get();
+		
+		if (userRepository.findByUserName(authenticatedUserName).get().getType().equals(UserType.ADMIN)) return ticket.getComments();
 		if (ticket.getCreatedBy().getUserName().equals(authenticatedUserName) || ticket.getAssignedTo().getUserName().equals(authenticatedUserName)) {
 			return ticket.getComments();
 		} else {

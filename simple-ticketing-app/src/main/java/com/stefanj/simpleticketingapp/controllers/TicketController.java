@@ -51,9 +51,9 @@ public class TicketController {
 	@PreAuthorize("hasAuthority('SCOPE_Customer')")
 	@PostMapping
 	@Operation(summary = "Create ticket")
-	public ResponseEntity<TicketDTO> createTicket(TicketDTO ticketDTO) {
+	public ResponseEntity<TicketDTO> createTicket(TicketDTO ticketDTO, Authentication authentication) {
 		logger.debug(getClass().getSimpleName() + ".createTicket: Called for " + ticketDTO + ".");
-		return new ResponseEntity<>(TicketDTO.fromEntity(ticketService.save(TicketDTO.toEntity(ticketDTO))), HttpStatus.CREATED);
+		return new ResponseEntity<>(TicketDTO.fromEntity(ticketService.save(TicketDTO.toEntity(ticketDTO), authentication.getName())), HttpStatus.CREATED);
 	}
 	
 	@PreAuthorize("hasAuthority('SCOPE_SupportStaff') or hasAuthority('SCOPE_Admin')")

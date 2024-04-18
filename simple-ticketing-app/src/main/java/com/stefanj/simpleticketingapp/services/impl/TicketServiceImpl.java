@@ -12,9 +12,13 @@ import org.springframework.stereotype.Service;
 
 import com.stefanj.simpleticketingapp.exceptions.ErrorCode;
 import com.stefanj.simpleticketingapp.exceptions.NotFoundException;
+import com.stefanj.simpleticketingapp.model.ServiceLayerAgreement;
 import com.stefanj.simpleticketingapp.model.Ticket;
+import com.stefanj.simpleticketingapp.model.UserGroup;
 import com.stefanj.simpleticketingapp.model.UserType;
+import com.stefanj.simpleticketingapp.repositories.ServiceLayerAgreementRepository;
 import com.stefanj.simpleticketingapp.repositories.TicketRepository;
+import com.stefanj.simpleticketingapp.repositories.UserGroupRepository;
 import com.stefanj.simpleticketingapp.repositories.UserRepository;
 import com.stefanj.simpleticketingapp.services.TicketService;
 
@@ -24,10 +28,15 @@ public class TicketServiceImpl implements TicketService {
 
 	private final UserRepository userRepository;
 	private final TicketRepository ticketRepository;
+	private final ServiceLayerAgreementRepository agreementRepository;
+	private final UserGroupRepository userGroupRepository;
 	
-	public TicketServiceImpl(TicketRepository ticketRepository, UserRepository userRepository) {
+	public TicketServiceImpl(TicketRepository ticketRepository, UserRepository userRepository, 
+			ServiceLayerAgreementRepository agreementRepository, UserGroupRepository userGroupRepository) {
 		this.userRepository = userRepository;
 		this.ticketRepository = ticketRepository;
+		this.agreementRepository = agreementRepository;
+		this.userGroupRepository = userGroupRepository;
 	}
 
 	@Override
@@ -42,8 +51,16 @@ public class TicketServiceImpl implements TicketService {
 	}
 
 	@Override
-	public Ticket save(Ticket ticket) {
+	public Ticket save(Ticket ticket, String authenticatedUserName) {
 		logger.debug(getClass().getSimpleName() + ".save: Start.");
+		Optional<ServiceLayerAgreement> slaOptional = agreementRepository.findById(ticket.getSla().getId());
+		if (slaOptional.isEmpty()) throw new NotFoundException(ErrorCode.RESOURCE_NOT_FOUND, new HashMap<String, Object>(Map.of("slaId", ticket.getSla().getId())));
+		ticket.setSla(slaOptional.get());
+		ticket.setCreatedBy(userRepository.findByUserName(authenticatedUserName).get());
+		
+		Optional<UserGroup> userGroupOptional = userGroupRepository.findById(ticket.getUserGroup().getId());
+		if (userGroupOptional.isPresent()) ticket.setUserGroup(userGroupOptional.get());
+		
 		Ticket savedTicket = ticketRepository.save(ticket);
 		logger.debug(getClass().getSimpleName() + ".save: End. Id = '" + savedTicket.getId() + "'.");
 		return savedTicket;
